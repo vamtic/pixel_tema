@@ -7,21 +7,17 @@
 // ==/UserScript==
 
 (function() {
-    // Betöltjük a színek tárolását az oldal újratöltésekor
     function loadColors() {
         const colors = localStorage.getItem('customColors');
         return colors ? JSON.parse(colors) : ['#00ced1', '#23FF01'];
     }
 
-    // Mentjük a színeket a localStorage-be
     function saveColors(colors) {
         localStorage.setItem('customColors', JSON.stringify(colors));
     }
 
-    // Színek betöltése
     let colors = loadColors();
 
-    // UI létrehozása a színek kiválasztásához
     const pickerContainer = document.createElement('div');
     pickerContainer.style.position = 'fixed';
     pickerContainer.style.left = '10px';
@@ -51,7 +47,6 @@
     `;
     document.body.appendChild(pickerContainer);
 
-    // Változó a lekerekítés engedélyezéséhez vagy letiltásához
     let enableBorderRadius = true;
 
     function updateColorPickers() {
@@ -88,16 +83,21 @@
         const gradient = `linear-gradient(${colors.join(', ')})`;
 
         GM_addStyle(`
+            body {
+                background: ${colors[0]};
+                color: ${colors[1]};
+            }
+
             a:link, .modallink {
-                color: ${colors[0]};
+                color: ${colors[1]};
             }
 
             a:visited {
-                color: ${colors[1]};
+                color: ${colors[2]};
             }
 
             a:hover, .modallink:hover {
-                color: ${colors[1]};
+                color: ${colors[2]};
             }
 
             .inarea {
@@ -223,9 +223,6 @@
             }
 
             .modalcvtext, .tmpitm-desc {
-                color: hsla(180
-
-            .modalcvtext, .tmpitm-desc {
                 color: hsla(180, 100%, 75%, 0.6);
             }
 
@@ -270,20 +267,3 @@
                 background-color: ${colors[1]};
             }
         `);
-    }
-
-    // Eseménykezelő a gradiens alkalmazása gombra
-    document.getElementById('applyGradient').addEventListener('click', applyGradient);
-
-    // Alapértelmezett színek alkalmazása betöltéskor
-    updateColorPickers();
-    applyGradient();
-
-    // Eseménykezelő a lekerekítés engedélyezésének vagy letiltásának változtatására
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'r') { // R gomb lenyomása
-            enableBorderRadius = !enableBorderRadius;
-            applyGradient(); // Frissítsük a stílusokat
-        }
-    });
-})();
