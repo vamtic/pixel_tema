@@ -1,194 +1,222 @@
 // ==UserScript==
-// @name     ppf_theme
+// @name     ppf_theme_with_gradient
 // @grant    GM_addStyle
 // @run-at   document-start
 // @author   vamtic:
 // @include  https://pixelplanet.fun/*
 // ==/UserScript==
 
-GM_addStyle ( `
-a:link {
-  color: #00ced1;
-}
+(function() {
+    // Create the UI for color selection
+    const pickerContainer = document.createElement('div');
+    pickerContainer.style.position = 'fixed';
+    pickerContainer.style.left = '10px';
+    pickerContainer.style.top = '50%';
+    pickerContainer.style.transform = 'translateY(-50%)';
+    pickerContainer.style.zIndex = '1000';
+    pickerContainer.style.backgroundColor = 'rgba(0,0,0,0.8)';
+    pickerContainer.style.padding = '10px';
+    pickerContainer.style.borderRadius = '5px';
+    pickerContainer.style.color = 'white';
+    pickerContainer.innerHTML = `
+        <label for="color1">Color 1:</label>
+        <input type="color" id="color1" name="color1" value="#00ced1">
+        <br><br>
+        <label for="color2">Color 2:</label>
+        <input type="color" id="color2" name="color2" value="#4682b4">
+        <br><br>
+        <button id="applyGradient">Apply Gradient</button>
+    `;
+    document.body.appendChild(pickerContainer);
 
-a:visited {
-  color: #4682b4;
-}
+    // Function to apply the gradient
+    function applyGradient() {
+        const color1 = document.getElementById('color1').value;
+        const color2 = document.getElementById('color2').value;
 
-a:hover {
-  color: #5f9ea0;
-}
+        GM_addStyle(`
+            a:link, .modallink {
+                color: ${color1};
+            }
 
-.modallink {
-  color: #00ced1;
-}
+            a:visited {
+                color: ${color2};
+            }
 
-.modallink:hover {
-  color: #5f9ea0;
-}
+            a:hover, .modallink:hover {
+                color: ${color2};
+            }
 
-.inarea {
-  border-color: #7fffd4;
-}
+            .inarea {
+                border-color: ${color1};
+            }
 
-.tab-list-item {
-  color: #00ced1; 
-}
-.tab-list-item.active {
-  background-color: #4682b4;
-  color: white;
-}
-.tab-list-item:not(.active):hover {
-  background-color: #5f9ea0;
-}
+            .tab-list-item {
+                color: ${color1}; 
+            }
+            .tab-list-item.active {
+                background-color: ${color2};
+                color: white;
+            }
+            .tab-list-item:not(.active):hover {
+                background-color: ${color1};
+            }
 
-tr:nth-child(even) {
-  background-color: #20b2aa;
-}
+            tr:nth-child(even) {
+                background-color: ${color1};
+            }
 
-.window, .popup {
-  background-color: rgba(0, 128, 128, 0.98);
-  color: #f4f4f4;
-}
-.window {
-  border-radius: 5px;
-}
+            .window, .popup {
+                background: linear-gradient(${color1}, ${color2});
+                color: #f4f4f4;
+            }
+            .window {
+                border-radius: 5px;
+            }
 
-.win-title {
-  background-color: #40e0d0;
-}
+            .win-title {
+                background-color: ${color1};
+            }
 
-.win-topbar, .modal-topbtn {
-  color: black;
-}
+            .win-topbar, .modal-topbtn {
+                color: black;
+            }
 
-.win-title:hover {
-  background-color: #48d1cc;
-}
+            .win-title:hover {
+                background-color: ${color2};
+            }
 
-.win-topbtn, .modal-topbtn {
-  background-color: #5f9ea0;
-}
+            .win-topbtn, .modal-topbtn {
+                background-color: ${color1};
+            }
 
-.win-topbtn:hover, .modal-topbtn:hover {
-  background-color: #4682b4;
-}
+            .win-topbtn:hover, .modal-topbtn:hover {
+                background-color: ${color2};
+            }
 
-.channeldd, .contextmenu {
-  background-color: #008b8b;
-  color: #efefef;
-  border-radius: 8px;
-}
+            .channeldd, .contextmenu {
+                background-color: ${color1};
+                color: #efefef;
+                border-radius: 8px;
+            }
 
-.chntop {
-  margin-top: 4px;
-}
+            .chntop {
+                margin-top: 4px;
+            }
 
-.chn, .chntype, .contextmenu > div {
-  background-color: #20b2aa;
-}
+            .chn, .chntype, .contextmenu > div {
+                background-color: ${color1};
+            }
 
-.chn.selected, .chn:hover, .chntype.selected, .chntype:hover,
-.contextmenu > div:hover {
-  background-color: #2e8b57;
-}
+            .chn.selected, .chn:hover, .chntype.selected, .chntype:hover,
+            .contextmenu > div:hover {
+                background-color: ${color2};
+            }
 
-.actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
-  background-color: rgba(0, 139, 139, 0.8);
-  color: #f4f4f4;
-  border-radius: 21px;
-}
+            .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
+                background: linear-gradient(${color1}, ${color2});
+                color: #f4f4f4;
+                border-radius: 21px;
+            }
 
-#pencilbutton.ppencil {
-  background-color: rgba(0, 206, 209, 0.8);
-}
-#pencilbutton.phistory {
-  background-color: rgba(31, 84, 111, 0.8);
-}
-#pencilbutton.poverlay {
-  background-color: rgba(117, 31, 31, 0.8);
-}
+            #pencilbutton.ppencil {
+                background-color: ${color1};
+            }
+            #pencilbutton.phistory {
+                background-color: ${color2};
+            }
+            #pencilbutton.poverlay {
+                background-color: ${color1};
+            }
 
-.menu > div {
-  z-index: 1;
-  background-color: #4682b4;
-}
+            .menu > div {
+                z-index: 1;
+                background-color: ${color2};
+            }
 
-.modal, .Alert {
-  background: #008b8b none repeat scroll 0 0;;
-  color: #f4f4f4;
-}
+            .modal, .Alert {
+                background: linear-gradient(${color1}, ${color2});
+                color: #f4f4f4;
+            }
 
-.modal {
-  border-radius: 21px;
-}
+            .modal {
+                border-radius: 21px;
+            }
 
-.Alert {
-  border-radius: 12px;
-}
+            .Alert {
+                border-radius: 12px;
+            }
 
-.modal-content, .win-content, .popup-content {
-  color: #f4f4f4;
-}
+            .modal-content, .win-content, .popup-content {
+                color: #f4f4f4;
+            }
 
-h3, h4 {
-  color: #afeeee;
-}
+            h3, h4 {
+                color: ${color1};
+            }
 
-.modaldesc {
-  color: hsla(180, 100%, 75%, 0.6);
-}
+            .modaldesc {
+                color: hsla(180, 100%, 75%, 0.6);
+            }
 
-.modaldivider {
-  background-color: hsla(180, 100%, 75%, 0.3);
-}
+            .modaldivider {
+                background-color: hsla(180, 100%, 75%, 0.3);
+            }
 
-.modalinfo, .tmpitm-desc span {
-  color: #ddd;
-}
+            .modalinfo, .tmpitm-desc span {
+                color: #ddd;
+            }
 
-.modalcvtext, .tmpitm-desc {
-  color: hsla(180, 100%, 75%, 0.6);
-}
+            .modalcvtext, .tmpitm-desc {
+                color: hsla(180, 100%, 75%, 0.6);
+            }
 
-.overlay {
-  background-color: rgba(72, 209, 204, 0.75);
-}
+            .overlay {
+                background-color: rgba(72, 209, 204, 0.75);
+            }
 
-.chatname {
-  background-color: #5f9ea0;
-}
-.mention {
-  background-color: #4682b4;
-}
-.chatmsg:hover {
-  background-color: #2e8b57;
-}
-.msg {
-  color: #f3f3f3;
-}
-.msg.info{
-  color: #ff91a6;
-}
-.msg.event{
-  color: #9dc8ff;
-}
-.msg.greentext{
-  color: #94ff94;
-}
-.ebex {
-  color: #fff4bd;
-}
+            .chatname {
+                background-color: ${color1};
+            }
+            .mention {
+                background-color: ${color2};
+            }
+            .chatmsg:hover {
+                background-color: ${color1};
+            }
+            .msg {
+                color: #f3f3f3;
+            }
+            .msg.info{
+                color: #ff91a6;
+            }
+            .msg.event{
+                color: #9dc8ff;
+            }
+            .msg.greentext{
+                color: #94ff94;
+            }
+            .ebex {
+                color: #fff4bd;
+            }
 
-.chatlink {
-  color: #f9edde;
-}
+            .chatlink {
+                color: #f9edde;
+            }
 
-.statvalue {
-  color: #ecc9ff;
-}
+            .statvalue {
+                color: #ecc9ff;
+            }
 
-.actionbuttons:hover, .coorbox:hover, .menu > div:hover {
-  background-color: #2e8b57;
-}
-` );
+            .actionbuttons:hover, .coorbox:hover, .menu > div:hover {
+                background-color: ${color2};
+            }
+        `);
+    }
+
+    // Event listener for the button
+    document.getElementById('applyGradient').addEventListener('click', applyGradient);
+
+    // Initial application of the default colors
+    applyGradient();
+})();
