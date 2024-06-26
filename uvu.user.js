@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name     ppf_theme
+// @name     ppf_tema
 // @grant    GM_addStyle
 // @run-at   document-start
 // @author   vamtic:
@@ -7,7 +7,21 @@
 // ==/UserScript==
 
 (function() {
-    // Create the UI for color selection
+    // Betöltjük a színek tárolását az oldal újratöltésekor
+    function loadColors() {
+        const colors = localStorage.getItem('customColors');
+        return colors ? JSON.parse(colors) : ['#00ced1', '#4682b4'];
+    }
+
+    // Mentjük a színeket a localStorage-be
+    function saveColors(colors) {
+        localStorage.setItem('customColors', JSON.stringify(colors));
+    }
+
+    // Színek betöltése
+    let colors = loadColors();
+
+    // UI létrehozása a színek kiválasztásához
     const pickerContainer = document.createElement('div');
     pickerContainer.style.position = 'fixed';
     pickerContainer.style.left = '10px';
@@ -22,42 +36,53 @@
     pickerContainer.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
     pickerContainer.innerHTML = `
         <div style="text-align: center; margin-bottom: 10px;">
-            <h2 style="margin: 0; font-size: 16px;">Gradient Picker</h2>
+            <h2 style="margin: 0; font-size: 16px;">Gradiensek Kiválasztása</h2>
         </div>
         <div id="colorPickers">
-            <div class="colorPicker">
-                <label for="color1">1. szín:</label>
-                <input type="color" id="color1" name="color1" value="#00ced1">
-            </div>
-            <div class="colorPicker">
-                <label for="color2">2. szín:</label>
-                <input type="color" id="color2" name="color2" value="#4682b4">
-            </div>
+            ${colors.map((color, index) => `
+                <div class="colorPicker">
+                    <label for="color${index + 1}">Szín ${index + 1}:</label>
+                    <input type="color" id="color${index + 1}" name="color${index + 1}" value="${color}">
+                    ${index >= 2 ? `<button class="removeColor" data-index="${index}" style="margin-left: 5px; background-color: #ff4c4c; color: white; border: none; padding: 2px 5px; border-radius: 5px; cursor: pointer;">X</button>` : ''}
+                </div>
+            `).join('')}
         </div>
-        <button id="addColor" style="margin-top: 10px; background-color: #4682b4; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Add Color</button>
-        <button id="applyGradient" style="margin-top: 10px; background-color: #00ced1; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Apply Gradient</button>
+        <button id="addColor" style="margin-top: 10px; background-color: #4682b4; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Szín Hozzáadása</button>
+        <button id="applyGradient" style="margin-top: 10px; background-color: #00ced1; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Gradiens Alkalmazása</button>
     `;
     document.body.appendChild(pickerContainer);
 
-    let colorCount = 2;
+    function updateColorPickers() {
+        const colorPickers = document.getElementById('colorPickers');
+        colorPickers.innerHTML = colors.map((color, index) => `
+            <div class="colorPicker">
+                <label for="color${index + 1}">Szín ${index + 1}:</label>
+                <input type="color" id="color${index + 1}" name="color${index + 1}" value="${color}">
+                ${index >= 2 ? `<button class="removeColor" data-index="${index}" style="margin-left: 5px; background-color: #ff4c4c; color: white; border: none; padding: 2px 5px; border-radius: 5px; cursor: pointer;">X</button>` : ''}
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.removeColor').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                colors.splice(index, 1);
+                updateColorPickers();
+                saveColors(colors);
+                applyGradient();
+            });
+        });
+    }
 
     document.getElementById('addColor').addEventListener('click', () => {
-        colorCount++;
-        const colorPickers = document.getElementById('colorPickers');
-        const newColorPicker = document.createElement('div');
-        newColorPicker.className = 'colorPicker';
-        newColorPicker.innerHTML = `
-            <label for="color${colorCount}">Color ${colorCount}:</label>
-            <input type="color" id="color${colorCount}" name="color${colorCount}" value="#ffffff">
-        `;
-        colorPickers.appendChild(newColorPicker);
+        colors.push('#ffffff');
+        updateColorPickers();
+        saveColors(colors);
     });
 
     function applyGradient() {
-        const colors = [];
-        for (let i = 1; i <= colorCount; i++) {
-            colors.push(document.getElementById(`color${i}`).value);
-        }
+        colors = colors.map((_, i) => document.getElementById(`color${i + 1}`).value);
+        saveColors(colors);
+        
         const gradient = `linear-gradient(${colors.join(', ')})`;
 
         GM_addStyle(`
@@ -240,9 +265,10 @@
         `);
     }
 
-    // Event listener for the apply gradient button
+    // Eseménykezelő a gradiens alkalmazása gombra
     document.getElementById('applyGradient').addEventListener('click', applyGradient);
 
-    // Initial application of the default colors
+    // Alapértelmezett színek alkalmazása betöltéskor
+    updateColorPickers();
     applyGradient();
 })();
