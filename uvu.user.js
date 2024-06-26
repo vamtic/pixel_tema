@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name     ppf_theme_with_gradient
+// @name     ppf_theme
 // @grant    GM_addStyle
 // @run-at   document-start
 // @author   vamtic:
@@ -16,58 +16,84 @@
     pickerContainer.style.zIndex = '1000';
     pickerContainer.style.backgroundColor = 'rgba(0,0,0,0.8)';
     pickerContainer.style.padding = '10px';
-    pickerContainer.style.borderRadius = '5px';
+    pickerContainer.style.borderRadius = '10px';
     pickerContainer.style.color = 'white';
+    pickerContainer.style.fontFamily = 'Arial, sans-serif';
+    pickerContainer.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
     pickerContainer.innerHTML = `
-        <label for="color1">Color 1:</label>
-        <input type="color" id="color1" name="color1" value="#00ced1">
-        <br><br>
-        <label for="color2">Color 2:</label>
-        <input type="color" id="color2" name="color2" value="#4682b4">
-        <br><br>
-        <button id="applyGradient">Apply Gradient</button>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <h2 style="margin: 0; font-size: 16px;">Gradient Picker</h2>
+        </div>
+        <div id="colorPickers">
+            <div class="colorPicker">
+                <label for="color1">1. szín:</label>
+                <input type="color" id="color1" name="color1" value="#00ced1">
+            </div>
+            <div class="colorPicker">
+                <label for="color2">2. szín:</label>
+                <input type="color" id="color2" name="color2" value="#4682b4">
+            </div>
+        </div>
+        <button id="addColor" style="margin-top: 10px; background-color: #4682b4; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Add Color</button>
+        <button id="applyGradient" style="margin-top: 10px; background-color: #00ced1; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Apply Gradient</button>
     `;
     document.body.appendChild(pickerContainer);
 
-    // Function to apply the gradient
+    let colorCount = 2;
+
+    document.getElementById('addColor').addEventListener('click', () => {
+        colorCount++;
+        const colorPickers = document.getElementById('colorPickers');
+        const newColorPicker = document.createElement('div');
+        newColorPicker.className = 'colorPicker';
+        newColorPicker.innerHTML = `
+            <label for="color${colorCount}">Color ${colorCount}:</label>
+            <input type="color" id="color${colorCount}" name="color${colorCount}" value="#ffffff">
+        `;
+        colorPickers.appendChild(newColorPicker);
+    });
+
     function applyGradient() {
-        const color1 = document.getElementById('color1').value;
-        const color2 = document.getElementById('color2').value;
+        const colors = [];
+        for (let i = 1; i <= colorCount; i++) {
+            colors.push(document.getElementById(`color${i}`).value);
+        }
+        const gradient = `linear-gradient(${colors.join(', ')})`;
 
         GM_addStyle(`
             a:link, .modallink {
-                color: ${color1};
+                color: ${colors[0]};
             }
 
             a:visited {
-                color: ${color2};
+                color: ${colors[1]};
             }
 
             a:hover, .modallink:hover {
-                color: ${color2};
+                color: ${colors[1]};
             }
 
             .inarea {
-                border-color: ${color1};
+                border-color: ${colors[0]};
             }
 
             .tab-list-item {
-                color: ${color1}; 
+                color: ${colors[0]}; 
             }
             .tab-list-item.active {
-                background-color: ${color2};
+                background-color: ${colors[1]};
                 color: white;
             }
             .tab-list-item:not(.active):hover {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
 
             tr:nth-child(even) {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
 
             .window, .popup {
-                background: linear-gradient(${color1}, ${color2});
+                background: ${gradient};
                 color: #f4f4f4;
             }
             .window {
@@ -75,7 +101,7 @@
             }
 
             .win-title {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
 
             .win-topbar, .modal-topbtn {
@@ -83,19 +109,19 @@
             }
 
             .win-title:hover {
-                background-color: ${color2};
+                background-color: ${colors[1]};
             }
 
             .win-topbtn, .modal-topbtn {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
 
             .win-topbtn:hover, .modal-topbtn:hover {
-                background-color: ${color2};
+                background-color: ${colors[1]};
             }
 
             .channeldd, .contextmenu {
-                background-color: ${color1};
+                background-color: ${colors[0]};
                 color: #efefef;
                 border-radius: 8px;
             }
@@ -105,37 +131,37 @@
             }
 
             .chn, .chntype, .contextmenu > div {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
 
             .chn.selected, .chn:hover, .chntype.selected, .chntype:hover,
             .contextmenu > div:hover {
-                background-color: ${color2};
+                background-color: ${colors[1]};
             }
 
             .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
-                background: linear-gradient(${color1}, ${color2});
+                background: ${gradient};
                 color: #f4f4f4;
                 border-radius: 21px;
             }
 
             #pencilbutton.ppencil {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
             #pencilbutton.phistory {
-                background-color: ${color2};
+                background-color: ${colors[1]};
             }
             #pencilbutton.poverlay {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
 
             .menu > div {
                 z-index: 1;
-                background-color: ${color2};
+                background-color: ${colors[1]};
             }
 
             .modal, .Alert {
-                background: linear-gradient(${color1}, ${color2});
+                background: ${gradient};
                 color: #f4f4f4;
             }
 
@@ -152,7 +178,7 @@
             }
 
             h3, h4 {
-                color: ${color1};
+                color: ${colors[0]};
             }
 
             .modaldesc {
@@ -176,13 +202,13 @@
             }
 
             .chatname {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
             .mention {
-                background-color: ${color2};
+                background-color: ${colors[1]};
             }
             .chatmsg:hover {
-                background-color: ${color1};
+                background-color: ${colors[0]};
             }
             .msg {
                 color: #f3f3f3;
@@ -209,12 +235,12 @@
             }
 
             .actionbuttons:hover, .coorbox:hover, .menu > div:hover {
-                background-color: ${color2};
+                background-color: ${colors[1]};
             }
         `);
     }
 
-    // Event listener for the button
+    // Event listener for the apply gradient button
     document.getElementById('applyGradient').addEventListener('click', applyGradient);
 
     // Initial application of the default colors
