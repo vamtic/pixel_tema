@@ -36,7 +36,7 @@
     pickerContainer.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
     pickerContainer.innerHTML = `
         <div style="text-align: center; margin-bottom: 10px;">
-            <h2 style="margin: 0; font-size: 16px;">Gradiensek Kiválasztása</h2>
+            <h2 style="margin: 0; font-size: 16px;">Átmenet Kiválasztása</h2>
         </div>
         <div id="colorPickers">
             ${colors.map((color, index) => `
@@ -48,7 +48,7 @@
             `).join('')}
         </div>
         <button id="addColor" style="margin-top: 10px; background-color: #4682b4; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Szín Hozzáadása</button>
-        <button id="applyGradient" style="margin-top: 10px; background-color: #00ced1; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Gradiens Alkalmazása</button>
+        <button id="applyGradient" style="margin-top: 10px; background-color: #00ced1; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Átmenet Alkalmazása</button>
     `;
     document.body.appendChild(pickerContainer);
 
