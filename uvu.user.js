@@ -2,14 +2,14 @@
 // @name     ppf_tema
 // @grant    GM_addStyle
 // @run-at   document-start
-// @author   vamtic:
+// @author   vamtic
 // @include  https://pixelplanet.fun/*
 // ==/UserScript==
 
 (function() {
     function loadColors() {
         const colors = localStorage.getItem('customColors');
-        return colors ? JSON.parse(colors) : ['#00ced1', '#23FF01'];
+        return colors ? JSON.parse(colors) : ['#00ced1', '#4682b4'];
     }
 
     function loadRounding() {
@@ -69,7 +69,7 @@
                 ${index >= 2 ? `<button class="removeColor" data-index="${index}" style="margin-left: 5px; background-color: #ff4c4c; color: white; border: none; padding: 2px 5px; border-radius: 5px; cursor: pointer;">X</button>` : ''}
             </div>
         `).join('');
-        
+
         document.querySelectorAll('.removeColor').forEach(button => {
             button.addEventListener('click', (e) => {
                 const index = parseInt(e.target.getAttribute('data-index'));
@@ -96,7 +96,7 @@
     function applyGradient() {
         colors = colors.map((_, i) => document.getElementById(`color${i + 1}`).value);
         saveColors(colors);
-        
+
         const gradient = `linear-gradient(${colors.join(', ')})`;
 
         GM_addStyle(`
@@ -112,87 +112,18 @@
                 color: ${colors[1]};
             }
 
-            .inarea {
-                border-color: ${colors[0]};
-            }
-
-            .tab-list-item {
-                color: ${colors[0]}; 
-            }
-            .tab-list-item.active {
-                background-color: ${colors[1]};
-                color: white;
-            }
-            .tab-list-item:not(.active):hover {
-                background-color: ${colors[0]};
+            .window, .popup {
+                background: ${gradient};
+                color: mix-blend-mode: difference;
             }
 
             tr:nth-child(even) {
                 background-color: ${colors[0]};
             }
 
-            .window, .popup {
-                background: ${gradient};
-                color: #f4f4f4;
-            }
-            .window {
-                border-radius: ${rounded ? '5px' : '0px'};
-            }
-
-            .win-title {
-                background-color: ${colors[0]};
-                color: ${colors[1]}; /* Adjust text color for contrast */
-            }
-
-            .win-topbar, .modal-topbtn {
-                color: black;
-            }
-
-            .win-title:hover {
-                background-color: ${colors[1]};
-            }
-
-            .win-topbtn, .modal-topbtn {
-                background-color: ${colors[0]};
-            }
-
-            .win-topbtn:hover, .modal-topbtn:hover {
-                background-color: ${colors[1]};
-            }
-
-            .channeldd, .contextmenu {
-                background-color: ${colors[0]};
-                color: #efefef;
-                border-radius: ${rounded ? '8px' : '0px'};
-            }
-
-            .chntop {
-                margin-top: 4px;
-            }
-
-            .chn, .chntype, .contextmenu > div {
-                background-color: ${colors[0]};
-            }
-
-            .chn.selected, .chn:hover, .chntype.selected, .chntype:hover,
-            .contextmenu > div:hover {
-                background-color: ${colors[1]};
-            }
-
             .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
                 background: ${gradient};
-                color: #f4f4f4;
-                border-radius: ${rounded ? '21px' : '0px'};
-            }
-
-            #pencilbutton.ppencil {
-                background-color: ${colors[0]};
-            }
-            #pencilbutton.phistory {
-                background-color: ${colors[1]};
-            }
-            #pencilbutton.poverlay {
-                background-color: ${colors[0]};
+                color: mix-blend-mode: difference;
             }
 
             .menu > div {
@@ -202,47 +133,11 @@
 
             .modal, .Alert {
                 background: ${gradient};
-                color: #f4f4f4;
-            }
-
-            .modal {
-                border-radius: ${rounded ? '21px' : '0px'};
-            }
-
-            .Alert {
-                border-radius: ${rounded ? '12px' : '0px'};
-            }
-
-            .modal-content, .win-content, .popup-content {
-                color: #f4f4f4;
-            }
-
-            h3, h4 {
-                color: ${colors[0]};
-            }
-
-            .modaldesc {
-                color: hsla(180, 100%, 75%, 0.6);
-            }
-
-            .modaldivider {
-                background-color: hsla(180, 100%, 75%, 0.3);
-            }
-
-            .modalinfo, .tmpitm-desc span {
-                color: #ddd;
-            }
-
-            .modalcvtext, .tmpitm-desc {
-                color: hsla(180, 100%, 75%, 0.6);
-            }
-
-            .overlay {
-                background-color: rgba(72, 209, 204, 0.75);
+                color: mix-blend-mode: difference;
             }
 
             .chatname {
-                background-color: ${colors[0]};
+                color: mix-blend-mode: difference;
             }
             .mention {
                 background-color: ${colors[1]};
@@ -251,33 +146,47 @@
                 background-color: ${colors[0]};
             }
             .msg {
-                color: #f3f3f3;
+                color: mix-blend-mode: difference;
             }
-            .msg.info{
+            .msg.info {
                 color: #ff91a6;
             }
-            .msg.event{
+            .msg.event {
                 color: #9dc8ff;
             }
-            .msg.greentext{
+            .msg.greentext {
                 color: #94ff94;
             }
-            .ebex {
-                color: #fff4bd;
-            }
-
-            .chatlink {
-                color: #f9edde;
-            }
-
             .statvalue {
                 color: #ecc9ff;
             }
-
-            .actionbuttons:hover, .coorbox:hover, .menu > div:hover {
-                background-color: ${colors[1]};
-            }
         `);
+
+        if (rounded) {
+            GM_addStyle(`
+                .window, .popup {
+                    border-radius: 5px;
+                }
+                .channeldd, .contextmenu {
+                    border-radius: 8px;
+                }
+                .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
+                    border-radius: 21px;
+                }
+                .modal {
+                    border-radius: 21px;
+                }
+                .Alert {
+                    border-radius: 12px;
+                }
+            `);
+        } else {
+            GM_addStyle(`
+                .window, .popup, .channeldd, .contextmenu, .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect, .modal, .Alert {
+                    border-radius: 0;
+                }
+            `);
+        }
     }
 
     document.getElementById('applyGradient').addEventListener('click', applyGradient);
