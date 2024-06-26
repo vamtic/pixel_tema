@@ -99,6 +99,27 @@
         
         const gradient = `linear-gradient(${colors.join(', ')})`;
 
+        // Function to calculate contrasting text color
+        function getContrastColor(hexColor) {
+            // Convert hex color to RGB
+            const rgb = hexToRgb(hexColor);
+            if (!rgb) return '#ffffff'; // Default to white if color format is invalid
+
+            // Calculate relative luminance
+            const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+
+            // Use white or black depending on luminance threshold
+            return luminance > 0.5 ? '#000000' : '#ffffff';
+        }
+
+        function hexToRgb(hex) {
+            const bigint = parseInt(hex.slice(1), 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return { r, g, b };
+        }
+
         GM_addStyle(`
             a:link, .modallink {
                 color: ${colors[0]};
@@ -141,33 +162,22 @@
 
             .win-title {
                 background-color: ${colors[0]};
-                color: ${colors[1]}; /* Adjust text color for contrast */
+                color: ${getContrastColor(colors[0])}; /* Adjust text color for contrast */
             }
 
             .win-topbar, .modal-topbtn {
                 color: black;
             }
 
-            .win-title:hover {
-                background-color: ${colors[1]};
-            }
-
             .win-topbtn, .modal-topbtn {
                 background-color: ${colors[0]};
-            }
-
-            .win-topbtn:hover, .modal-topbtn:hover {
-                background-color: ${colors[1]};
+                color: ${getContrastColor(colors[0])}; /* Adjust text color for contrast */
             }
 
             .channeldd, .contextmenu {
                 background-color: ${colors[0]};
                 color: #efefef;
                 border-radius: ${rounded ? '8px' : '0px'};
-            }
-
-            .chntop {
-                margin-top: 4px;
             }
 
             .chn, .chntype, .contextmenu > div {
@@ -228,7 +238,7 @@
             .modaldivider {
                 background-color: hsla(180, 100%, 75%, 0.3);
             }
-
+            
             .modalinfo, .tmpitm-desc span {
                 color: #ddd;
             }
