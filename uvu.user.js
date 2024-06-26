@@ -7,21 +7,26 @@
 // ==/UserScript==
 
 (function() {
-    // Betöltjük a színek tárolását az oldal újratöltésekor
     function loadColors() {
         const colors = localStorage.getItem('customColors');
         return colors ? JSON.parse(colors) : ['#00ced1', '#4682b4'];
     }
 
-    // Mentjük a színeket a localStorage-be
+    function loadRounding() {
+        return localStorage.getItem('borderRadius') === 'true';
+    }
+
     function saveColors(colors) {
         localStorage.setItem('customColors', JSON.stringify(colors));
     }
 
-    // Színek betöltése
-    let colors = loadColors();
+    function saveRounding(rounded) {
+        localStorage.setItem('borderRadius', rounded.toString());
+    }
 
-    // UI létrehozása a színek kiválasztásához
+    let colors = loadColors();
+    let rounded = loadRounding();
+
     const pickerContainer = document.createElement('div');
     pickerContainer.style.position = 'fixed';
     pickerContainer.style.left = '10px';
@@ -49,6 +54,9 @@
         </div>
         <button id="addColor" style="margin-top: 10px; background-color: #4682b4; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Szín Hozzáadása</button>
         <button id="applyGradient" style="margin-top: 10px; background-color: #00ced1; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Átmenet Alkalmazása</button>
+        <label style="display: block; margin-top: 10px; color: white;">
+            <input type="checkbox" id="toggleRounding" ${rounded ? 'checked' : ''}> Lekerekítés
+        </label>
     `;
     document.body.appendChild(pickerContainer);
 
@@ -77,6 +85,12 @@
         colors.push('#ffffff');
         updateColorPickers();
         saveColors(colors);
+    });
+
+    document.getElementById('toggleRounding').addEventListener('change', (e) => {
+        rounded = e.target.checked;
+        saveRounding(rounded);
+        applyGradient();
     });
 
     function applyGradient() {
@@ -122,7 +136,7 @@
                 color: #f4f4f4;
             }
             .window {
-                border-radius: 5px;
+                border-radius: ${rounded ? '5px' : '0px'};
             }
 
             .win-title {
@@ -148,7 +162,7 @@
             .channeldd, .contextmenu {
                 background-color: ${colors[0]};
                 color: #efefef;
-                border-radius: 8px;
+                border-radius: ${rounded ? '8px' : '0px'};
             }
 
             .chntop {
@@ -167,7 +181,7 @@
             .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
                 background: ${gradient};
                 color: #f4f4f4;
-                border-radius: 21px;
+                border-radius: ${rounded ? '21px' : '0px'};
             }
 
             #pencilbutton.ppencil {
@@ -191,11 +205,11 @@
             }
 
             .modal {
-                border-radius: 21px;
+                border-radius: ${rounded ? '21px' : '0px'};
             }
 
             .Alert {
-                border-radius: 12px;
+                border-radius: ${rounded ? '12px' : '0px'};
             }
 
             .modal-content, .win-content, .popup-content {
@@ -243,7 +257,9 @@
             }
             .msg.event{
                 color: #9dc8ff;
-            }
+           
+
+ }
             .msg.greentext{
                 color: #94ff94;
             }
@@ -265,10 +281,8 @@
         `);
     }
 
-    // Eseménykezelő a gradiens alkalmazása gombra
     document.getElementById('applyGradient').addEventListener('click', applyGradient);
 
-    // Alapértelmezett színek alkalmazása betöltéskor
     updateColorPickers();
     applyGradient();
 })();
