@@ -93,32 +93,39 @@
         applyGradient();
     });
 
-    function applyGradient() {
-        colors = colors.map((_, i) => document.getElementById(`color${i + 1}`).value);
-        saveColors(colors);
-        
-        const gradient = `linear-gradient(${colors.join(', ')})`;
 
-        // Function to calculate contrasting text color
-        function getContrastColor(hexColor) {
-            // Convert hex color to RGB
-            const rgb = hexToRgb(hexColor);
-            if (!rgb) return '#ffffff'; // Default to white if color format is invalid
+If the text color isn't fully changing across all elements as expected, it might be due to specific CSS rules not being updated or overridden properly. Let's ensure that all necessary elements have their text colors adjusted dynamically based on the background colors. Here’s a revised approach to ensure comprehensive text color adjustments:
 
-            // Calculate relative luminance
-            const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+Check All CSS Rules: Review each CSS rule in applyGradient() to ensure that getContrastColor() is applied consistently where needed.
 
-            // Use white or black depending on luminance threshold
-            return luminance > 0.5 ? '#000000' : '#ffffff';
-        }
+Modify CSS Rules: Ensure that all elements with dynamically changing backgrounds also have their text colors adjusted accordingly using getContrastColor().
 
-        function hexToRgb(hex) {
-            const bigint = parseInt(hex.slice(1), 16);
-            const r = (bigint >> 16) & 255;
-            const g = (bigint >> 8) & 255;
-            const b = bigint & 255;
-            return { r, g, b };
-        }
+Let's update the applyGradient() function with a focus on ensuring comprehensive text color adjustments:
+
+javascript
+Kód másolása
+function applyGradient() {
+    colors = colors.map((_, i) => document.getElementById(`color${i + 1}`).value);
+    saveColors(colors);
+    
+    const gradient = `linear-gradient(${colors.join(', ')})`;
+
+    function getContrastColor(hexColor) {
+        const rgb = hexToRgb(hexColor);
+        if (!rgb) return '#ffffff';
+
+        const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+
+        return luminance > 0.5 ? '#000000' : '#ffffff';
+    }
+
+    function hexToRgb(hex) {
+        const bigint = parseInt(hex.slice(1), 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return { r, g, b };
+    }
 
         GM_addStyle(`
             a:link, .modallink {
