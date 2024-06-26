@@ -93,17 +93,6 @@
         applyGradient();
     });
 
-
-If the text color isn't fully changing across all elements as expected, it might be due to specific CSS rules not being updated or overridden properly. Let's ensure that all necessary elements have their text colors adjusted dynamically based on the background colors. Here’s a revised approach to ensure comprehensive text color adjustments:
-
-Check All CSS Rules: Review each CSS rule in applyGradient() to ensure that getContrastColor() is applied consistently where needed.
-
-Modify CSS Rules: Ensure that all elements with dynamically changing backgrounds also have their text colors adjusted accordingly using getContrastColor().
-
-Let's update the applyGradient() function with a focus on ensuring comprehensive text color adjustments:
-
-javascript
-Kód másolása
 function applyGradient() {
     colors = colors.map((_, i) => document.getElementById(`color${i + 1}`).value);
     saveColors(colors);
