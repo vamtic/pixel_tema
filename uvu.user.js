@@ -7,26 +7,21 @@
 // ==/UserScript==
 
 (function() {
+    // Betöltjük a színek tárolását az oldal újratöltésekor
     function loadColors() {
         const colors = localStorage.getItem('customColors');
         return colors ? JSON.parse(colors) : ['#00ced1', '#23FF01'];
     }
 
-    function loadRounding() {
-        return localStorage.getItem('borderRadius') === 'true';
-    }
-
+    // Mentjük a színeket a localStorage-be
     function saveColors(colors) {
         localStorage.setItem('customColors', JSON.stringify(colors));
     }
 
-    function saveRounding(rounded) {
-        localStorage.setItem('borderRadius', rounded.toString());
-    }
-
+    // Színek betöltése
     let colors = loadColors();
-    let rounded = loadRounding();
 
+    // UI létrehozása a színek kiválasztásához
     const pickerContainer = document.createElement('div');
     pickerContainer.style.position = 'fixed';
     pickerContainer.style.left = '10px';
@@ -35,7 +30,6 @@
     pickerContainer.style.zIndex = '1000';
     pickerContainer.style.backgroundColor = 'rgba(0,0,0,0.8)';
     pickerContainer.style.padding = '10px';
-    pickerContainer.style.borderRadius = '10px';
     pickerContainer.style.color = 'white';
     pickerContainer.style.fontFamily = 'Arial, sans-serif';
     pickerContainer.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
@@ -54,11 +48,11 @@
         </div>
         <button id="addColor" style="margin-top: 10px; background-color: #4682b4; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Szín Hozzáadása</button>
         <button id="applyGradient" style="margin-top: 10px; background-color: #00ced1; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Átmenet Alkalmazása</button>
-        <label style="display: block; margin-top: 10px; color: white;">
-            <input type="checkbox" id="toggleRounding" ${rounded ? 'checked' : ''}> Lekerekítés
-        </label>
     `;
     document.body.appendChild(pickerContainer);
+
+    // Változó a lekerekítés engedélyezéséhez vagy letiltásához
+    let enableBorderRadius = true;
 
     function updateColorPickers() {
         const colorPickers = document.getElementById('colorPickers');
@@ -87,34 +81,11 @@
         saveColors(colors);
     });
 
-    document.getElementById('toggleRounding').addEventListener('change', (e) => {
-        rounded = e.target.checked;
-        saveRounding(rounded);
-        applyGradient();
-    });
-
-function applyGradient() {
-    colors = colors.map((_, i) => document.getElementById(`color${i + 1}`).value);
-    saveColors(colors);
-    
-    const gradient = `linear-gradient(${colors.join(', ')})`;
-
-    function getContrastColor(hexColor) {
-        const rgb = hexToRgb(hexColor);
-        if (!rgb) return '#ffffff';
-
-        const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
-
-        return luminance > 0.5 ? '#000000' : '#ffffff';
-    }
-
-    function hexToRgb(hex) {
-        const bigint = parseInt(hex.slice(1), 16);
-        const r = (bigint >> 16) & 255;
-        const g = (bigint >> 8) & 255;
-        const b = bigint & 255;
-        return { r, g, b };
-    }
+    function applyGradient() {
+        colors = colors.map((_, i) => document.getElementById(`color${i + 1}`).value);
+        saveColors(colors);
+        
+        const gradient = `linear-gradient(${colors.join(', ')})`;
 
         GM_addStyle(`
             a:link, .modallink {
@@ -151,29 +122,40 @@ function applyGradient() {
             .window, .popup {
                 background: ${gradient};
                 color: #f4f4f4;
+                ${enableBorderRadius ? 'border-radius: 5px;' : ''}
             }
             .window {
-                border-radius: ${rounded ? '5px' : '0px'};
+                border-radius: 5px;
             }
 
             .win-title {
                 background-color: ${colors[0]};
-                color: ${getContrastColor(colors[0])}; /* Adjust text color for contrast */
             }
 
             .win-topbar, .modal-topbtn {
                 color: black;
             }
 
+            .win-title:hover {
+                background-color: ${colors[1]};
+            }
+
             .win-topbtn, .modal-topbtn {
                 background-color: ${colors[0]};
-                color: ${getContrastColor(colors[0])}; /* Adjust text color for contrast */
+            }
+
+            .win-topbtn:hover, .modal-topbtn:hover {
+                background-color: ${colors[1]};
             }
 
             .channeldd, .contextmenu {
                 background-color: ${colors[0]};
                 color: #efefef;
-                border-radius: ${rounded ? '8px' : '0px'};
+                border-radius: 8px;
+            }
+
+            .chntop {
+                margin-top: 4px;
             }
 
             .chn, .chntype, .contextmenu > div {
@@ -188,7 +170,7 @@ function applyGradient() {
             .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
                 background: ${gradient};
                 color: #f4f4f4;
-                border-radius: ${rounded ? '21px' : '0px'};
+                border-radius: 21px;
             }
 
             #pencilbutton.ppencil {
@@ -209,14 +191,15 @@ function applyGradient() {
             .modal, .Alert {
                 background: ${gradient};
                 color: #f4f4f4;
+                ${enableBorderRadius ? 'border-radius: 21px;' : ''}
             }
 
             .modal {
-                border-radius: ${rounded ? '21px' : '0px'};
+                border-radius: 21px;
             }
 
             .Alert {
-                border-radius: ${rounded ? '12px' : '0px'};
+                border-radius: 12px;
             }
 
             .modal-content, .win-content, .popup-content {
@@ -234,10 +217,13 @@ function applyGradient() {
             .modaldivider {
                 background-color: hsla(180, 100%, 75%, 0.3);
             }
-            
+
             .modalinfo, .tmpitm-desc span {
                 color: #ddd;
             }
+
+            .modalcvtext, .tmpitm-desc {
+                color: hsla(180
 
             .modalcvtext, .tmpitm-desc {
                 color: hsla(180, 100%, 75%, 0.6);
@@ -286,8 +272,18 @@ function applyGradient() {
         `);
     }
 
+    // Eseménykezelő a gradiens alkalmazása gombra
     document.getElementById('applyGradient').addEventListener('click', applyGradient);
 
+    // Alapértelmezett színek alkalmazása betöltéskor
     updateColorPickers();
     applyGradient();
+
+    // Eseménykezelő a lekerekítés engedélyezésének vagy letiltásának változtatására
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'r') { // R gomb lenyomása
+            enableBorderRadius = !enableBorderRadius;
+            applyGradient(); // Frissítsük a stílusokat
+        }
+    });
 })();
