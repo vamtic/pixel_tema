@@ -8,46 +8,46 @@
 
 GM_addStyle ( `
 a:link {
-  color: #91ffe0;
+  color: #00ced1;
 }
 
 a:visited {
-  color: #b5d06d;
+  color: #4682b4;
 }
 
 a:hover {
-  color: #d9f68a;
+  color: #5f9ea0;
 }
 
 .modallink {
-  color: #91ffe0;
+  color: #00ced1;
 }
 
 .modallink:hover {
-  color: #d9f68a;
+  color: #5f9ea0;
 }
 
 .inarea {
-  border-color: #d5d5d5;
+  border-color: #7fffd4;
 }
 
 .tab-list-item {
-  color: #e2e2e2; 
+  color: #00ced1; 
 }
 .tab-list-item.active {
-  background-color: #7b7b7b;
+  background-color: #4682b4;
   color: white;
 }
 .tab-list-item:not(.active):hover {
-  background-color: #636363;
+  background-color: #5f9ea0;
 }
 
 tr:nth-child(even) {
-  background-color: #505050;
+  background-color: #20b2aa;
 }
 
 .window, .popup {
-  background-color: rgba(59, 59, 59, 0.98);
+  background-color: rgba(0, 128, 128, 0.98);
   color: #f4f4f4;
 }
 .window {
@@ -55,7 +55,7 @@ tr:nth-child(even) {
 }
 
 .win-title {
-  background-color: #c1c1c1;
+  background-color: #40e0d0;
 }
 
 .win-topbar, .modal-topbtn {
@@ -63,19 +63,19 @@ tr:nth-child(even) {
 }
 
 .win-title:hover {
-  background-color: #dedede;
+  background-color: #48d1cc;
 }
 
 .win-topbtn, .modal-topbtn {
-  background-color: #a6a4a4;
+  background-color: #5f9ea0;
 }
 
 .win-topbtn:hover, .modal-topbtn:hover {
-  background-color: #8b8b8b;
+  background-color: #4682b4;
 }
 
 .channeldd, .contextmenu {
-  background-color: #535356;
+  background-color: #008b8b;
   color: #efefef;
   border-radius: 8px;
 }
@@ -85,22 +85,22 @@ tr:nth-child(even) {
 }
 
 .chn, .chntype, .contextmenu > div {
-  background-color: #5f5f5f;
+  background-color: #20b2aa;
 }
 
 .chn.selected, .chn:hover, .chntype.selected, .chntype:hover,
 .contextmenu > div:hover {
-  background-color: #404040;
+  background-color: #2e8b57;
 }
 
 .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
-  background-color: rgba(59, 59, 59, 0.8);
+  background-color: rgba(0, 139, 139, 0.8);
   color: #f4f4f4;
   border-radius: 21px;
 }
 
 #pencilbutton.ppencil {
-  background-color: rgba(131, 147, 19, 0.8);
+  background-color: rgba(0, 206, 209, 0.8);
 }
 #pencilbutton.phistory {
   background-color: rgba(31, 84, 111, 0.8);
@@ -111,11 +111,11 @@ tr:nth-child(even) {
 
 .menu > div {
   z-index: 1;
-  background-color: #15374fd1;
+  background-color: #4682b4;
 }
 
 .modal, .Alert {
-  background: #444242 none repeat scroll 0 0;;
+  background: #008b8b none repeat scroll 0 0;;
   color: #f4f4f4;
 }
 
@@ -132,15 +132,15 @@ tr:nth-child(even) {
 }
 
 h3, h4 {
-  color: #d7e5fb;
+  color: #afeeee;
 }
 
 .modaldesc {
-  color: hsla(220, 100%, 95.3%, 0.6);
+  color: hsla(180, 100%, 75%, 0.6);
 }
 
 .modaldivider {
-  background-color: hsla(216, 4%, 74%, .3);
+  background-color: hsla(180, 100%, 75%, 0.3);
 }
 
 .modalinfo, .tmpitm-desc span {
@@ -148,21 +148,21 @@ h3, h4 {
 }
 
 .modalcvtext, .tmpitm-desc {
-  color: hsla(220, 100%, 95.3%, 0.6);
+  color: hsla(180, 100%, 75%, 0.6);
 }
 
 .overlay {
-  background-color: rgba(187, 187, 187, 0.75);
+  background-color: rgba(72, 209, 204, 0.75);
 }
 
 .chatname {
-  background-color: #434648;
+  background-color: #5f9ea0;
 }
 .mention {
-  background-color: #484643;
+  background-color: #4682b4;
 }
 .chatmsg:hover {
-  background-color: #2525252b;
+  background-color: #2e8b57;
 }
 .msg {
   color: #f3f3f3;
@@ -189,6 +189,6 @@ h3, h4 {
 }
 
 .actionbuttons:hover, .coorbox:hover, .menu > div:hover {
-  background-color: #363637;
+  background-color: #2e8b57;
 }
 ` );
