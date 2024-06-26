@@ -267,3 +267,17 @@
                 background-color: ${colors[1]};
             }
         `);
+    }
+
+    document.getElementById('applyGradient').addEventListener('click', applyGradient);
+
+    updateColorPickers();
+    applyGradient();
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'r') {
+            enableBorderRadius = !enableBorderRadius;
+            applyGradient();
+        }
+    });
+})();
