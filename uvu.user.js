@@ -21,7 +21,7 @@
     // Load colors from localStorage or set defaults
     let colors = loadColors();
 
-    // Create UI for color selection
+    // Create UI for color selection and border-radius toggle
     const pickerContainer = document.createElement('div');
     pickerContainer.style.position = 'fixed';
     pickerContainer.style.left = '10px';
@@ -35,7 +35,7 @@
     pickerContainer.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
     pickerContainer.innerHTML = `
         <div style="text-align: center; margin-bottom: 10px;">
-            <h2 style="margin: 0; font-size: 16px;">Átmenet Kiválasztása</h2>
+            <h2 style="margin: 0; font-size: 16px;">Átmenet Kiválasztása és Lekerekítés Kapcsolása</h2>
         </div>
         <div id="colorPickers">
             ${colors.map((color, index) => `
@@ -48,6 +48,7 @@
         </div>
         <button id="addColor" style="margin-top: 10px; background-color: #4682b4; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Szín Hozzáadása</button>
         <button id="applyGradient" style="margin-top: 10px; background-color: #00ced1; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Átmenet Alkalmazása</button>
+        <button id="toggleBorderRadius" style="margin-top: 10px; background-color: #ff9800; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Lekerekítés Kapcsolása</button>
     `;
     document.body.appendChild(pickerContainer);
 
@@ -178,15 +179,13 @@
     // Event listener for applying gradient styles
     document.getElementById('applyGradient').addEventListener('click', applyGradient);
 
-    // Apply default colors on page load
+    // Event listener to toggle border-radius with 'toggleBorderRadius' button
+    document.getElementById('toggleBorderRadius').addEventListener('click', () => {
+        enableBorderRadius = !enableBorderRadius;
+        applyGradient();
+    });
+
+    // Apply default colors and styles on page load
     updateColorPickers();
     applyGradient();
-
-    // Event listener to toggle border-radius with 'r' key
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'r') {
-            enableBorderRadius = !enableBorderRadius;
-            applyGradient();
-        }
-    });
 })();
