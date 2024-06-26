@@ -2,22 +2,26 @@
 // @name     ppf_tema
 // @grant    GM_addStyle
 // @run-at   document-start
-// @author   vamtic:
+// @author   vamtic
 // @include  https://pixelplanet.fun/*
 // ==/UserScript==
 
 (function() {
+    // Function to load colors from localStorage or set defaults
     function loadColors() {
         const colors = localStorage.getItem('customColors');
         return colors ? JSON.parse(colors) : ['#00ced1', '#23FF01'];
     }
 
+    // Function to save colors to localStorage
     function saveColors(colors) {
         localStorage.setItem('customColors', JSON.stringify(colors));
     }
 
+    // Load colors from localStorage or set defaults
     let colors = loadColors();
 
+    // Create UI for color selection
     const pickerContainer = document.createElement('div');
     pickerContainer.style.position = 'fixed';
     pickerContainer.style.left = '10px';
@@ -47,8 +51,10 @@
     `;
     document.body.appendChild(pickerContainer);
 
+    // Variable to toggle border-radius
     let enableBorderRadius = true;
 
+    // Function to update color pickers UI
     function updateColorPickers() {
         const colorPickers = document.getElementById('colorPickers');
         colorPickers.innerHTML = colors.map((color, index) => `
@@ -70,34 +76,53 @@
         });
     }
 
+    // Event listener for adding a new color
     document.getElementById('addColor').addEventListener('click', () => {
         colors.push('#ffffff');
         updateColorPickers();
         saveColors(colors);
     });
 
+    // Function to apply gradient styles
     function applyGradient() {
         colors = colors.map((_, i) => document.getElementById(`color${i + 1}`).value);
         saveColors(colors);
         
+        // Calculate background luminance for text color inversion
+        function calculateLuminance(color) {
+            const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+            const r = parseInt(rgb[1], 16);
+            const g = parseInt(rgb[2], 16);
+            const b = parseInt(rgb[3], 16);
+            return 0.2126 * r + 0.7152 * g + 0.0722 * b; // ITU-R BT.709 luminance calculation
+        }
+        
+        const bgLuminance = calculateLuminance(colors[0]);
+        let textColor = '#f4f4f4'; // Default text color for dark background
+        if (bgLuminance > 128) {
+            textColor = '#333'; // Use darker text for lighter background
+        }
+        
         const gradient = `linear-gradient(${colors.join(', ')})`;
 
         GM_addStyle(`
+            /* General text color inversion based on background */
             body {
-                background: ${colors[0]};
-                color: ${colors[1]};
+                background-color: ${colors[0]};
+                color: ${textColor};
             }
 
+            /* Example: Specific styles using the gradient */
             a:link, .modallink {
-                color: ${colors[1]};
+                color: ${colors[0]};
             }
 
             a:visited {
-                color: ${colors[2]};
+                color: ${colors[1]};
             }
 
             a:hover, .modallink:hover {
-                color: ${colors[2]};
+                color: ${colors[1]};
             }
 
             .inarea {
@@ -119,6 +144,9 @@
                 background-color: ${colors[0]};
             }
 
+            /* Add more styles as needed */
+
+            /* Example: Gradient background for specific elements */
             .window, .popup {
                 background: ${gradient};
                 color: #f4f4f4;
@@ -128,152 +156,33 @@
                 border-radius: 5px;
             }
 
-            .win-title {
-                background-color: ${colors[0]};
-            }
+            /* Add more gradient styles for other elements */
 
-            .win-topbar, .modal-topbtn {
-                color: black;
-            }
-
-            .win-title:hover {
-                background-color: ${colors[1]};
-            }
-
-            .win-topbtn, .modal-topbtn {
-                background-color: ${colors[0]};
-            }
-
-            .win-topbtn:hover, .modal-topbtn:hover {
-                background-color: ${colors[1]};
-            }
-
-            .channeldd, .contextmenu {
-                background-color: ${colors[0]};
-                color: #efefef;
-                border-radius: 8px;
-            }
-
-            .chntop {
-                margin-top: 4px;
-            }
-
-            .chn, .chntype, .contextmenu > div {
-                background-color: ${colors[0]};
-            }
-
-            .chn.selected, .chn:hover, .chntype.selected, .chntype:hover,
-            .contextmenu > div:hover {
-                background-color: ${colors[1]};
-            }
-
-            .actionbuttons, .coorbox, .onlinebox, .cooldownbox, #historyselect {
-                background: ${gradient};
-                color: #f4f4f4;
-                border-radius: 21px;
-            }
-
-            #pencilbutton.ppencil {
-                background-color: ${colors[0]};
-            }
-            #pencilbutton.phistory {
-                background-color: ${colors[1]};
-            }
-            #pencilbutton.poverlay {
-                background-color: ${colors[0]};
-            }
-
-            .menu > div {
-                z-index: 1;
-                background-color: ${colors[1]};
-            }
-
+            /* Example: Toggle border-radius */
             .modal, .Alert {
                 background: ${gradient};
                 color: #f4f4f4;
                 ${enableBorderRadius ? 'border-radius: 21px;' : ''}
             }
-
             .modal {
                 border-radius: 21px;
             }
-
             .Alert {
                 border-radius: 12px;
             }
 
-            .modal-content, .win-content, .popup-content {
-                color: #f4f4f4;
-            }
-
-            h3, h4 {
-                color: ${colors[0]};
-            }
-
-            .modaldesc {
-                color: hsla(180, 100%, 75%, 0.6);
-            }
-
-            .modaldivider {
-                background-color: hsla(180, 100%, 75%, 0.3);
-            }
-
-            .modalinfo, .tmpitm-desc span {
-                color: #ddd;
-            }
-
-            .modalcvtext, .tmpitm-desc {
-                color: hsla(180, 100%, 75%, 0.6);
-            }
-
-            .overlay {
-                background-color: rgba(72, 209, 204, 0.75);
-            }
-
-            .chatname {
-                background-color: ${colors[0]};
-            }
-            .mention {
-                background-color: ${colors[1]};
-            }
-            .chatmsg:hover {
-                background-color: ${colors[0]};
-            }
-            .msg {
-                color: #f3f3f3;
-            }
-            .msg.info{
-                color: #ff91a6;
-            }
-            .msg.event{
-                color: #9dc8ff;
-            }
-            .msg.greentext{
-                color: #94ff94;
-            }
-            .ebex {
-                color: #fff4bd;
-            }
-
-            .chatlink {
-                color: #f9edde;
-            }
-
-            .statvalue {
-                color: #ecc9ff;
-            }
-
-            .actionbuttons:hover, .coorbox:hover, .menu > div:hover {
-                background-color: ${colors[1]};
-            }
+            /* Add more styles as needed */
         `);
     }
 
+    // Event listener for applying gradient styles
     document.getElementById('applyGradient').addEventListener('click', applyGradient);
 
+    // Apply default colors on page load
     updateColorPickers();
     applyGradient();
 
+    // Event listener to toggle border-radius with 'r' key
     document.addEventListener('keydown', function(event) {
         if (event.key === 'r') {
             enableBorderRadius = !enableBorderRadius;
