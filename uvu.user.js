@@ -141,6 +141,7 @@
 
             .win-title {
                 background-color: ${colors[0]};
+                color: ${colors[1]}; /* Adjust text color for contrast */
             }
 
             .win-topbar, .modal-topbtn {
@@ -257,9 +258,7 @@
             }
             .msg.event{
                 color: #9dc8ff;
-           
-
- }
+            }
             .msg.greentext{
                 color: #94ff94;
             }
