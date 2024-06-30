@@ -9,7 +9,7 @@
 (function() {
     function loadColors() {
         const colors = localStorage.getItem('customColors');
-        return colors ? JSON.parse(colors) : ['#00ced1', '#4682b4'];
+        return colors ? JSON.parse(colors) : ['#00ced1', '#23FF01'];
     }
 
     function loadRounding() {
