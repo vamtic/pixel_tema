@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name     ppf_tema
+// @name     pixelya_tema
 // @grant    GM_addStyle
 // @run-at   document-start
 // @author   vamtic
-// @include  https://pixelplanet.fun/*
+// @include  https://pixelya.fun/*
 // ==/UserScript==
 
 (function() {
